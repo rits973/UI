@@ -2,16 +2,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.js"></script>
 
 <h1>Account Information</h1>
+ID's
+<select data-bind="options:Accounts,optionsText:'Name',optionsValue:'Id'"></select><br>
+<hr/>
+
+
 Id:<span data-bind="text:Id"></span><br>
 Name:<span data-bind="text:Name"></span><br>
 Amount:<span data-bind="text:Amount"></span><br>
-
-New Amount<input type="text" data-bind="value:Amount"/>
-
 <input type="button" id="but" value="showDetails"/><br>
+<hr/>
 
 Deposit Amount<input type="text" id="txt" >
-<input type="button" id="bt" value="Deposit">
+<input type="button" id="bt" value="Deposit"><br>
+<hr/>
+
+
+Updated Amount<input type="text" data-bind="value:Amount"/>
+
+<hr/>
+NewId:<input type="text" id="newid" value=""><br>
+NewName:<input type="text" id="newname" value=""><br>
+NewAmount:<input type="text" id="newamount" value=""><br>
+<input type="button" id="but1" value="AddAccount"/><br>
+<hr/>
+
+
+
+
+
 
 <script>
 $(document).ready(function(){
@@ -21,6 +40,15 @@ $(document).ready(function(){
 		$("#bt").click(function(){
 			
 			accvm.Amount(Number(accvm.Amount()+Number($("#txt").val())));
+			})
+			$("#but1").click(function(){
+				
+				var acc1=new accModel($("#newid").val(),$("#newname").val(),$("#newamount").val())
+				
+				accViewModel.Accounts.push(acc1)
+				
+				alert(accViewModel.Accounts().length) 
+				
 			})
 	
 });
@@ -42,7 +70,9 @@ function accViewModel(acc){
 	this.Name=acc.Name;
 	this.Amount=ko.observable(acc.Amount);
 	var a1=new accModel(124,"gopal",40000);
-	this.Accounts=[a1];
+	var a2=new accModel(125,"rahul",40000);
+	var a3=new accModel(126,"govind",40000);
+	this.Accounts=ko.observableArray([a1,a2,a3]);
 	
 }
 var acc=new accModel(123,"Ritesh",20000);
