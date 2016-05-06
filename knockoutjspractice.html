@@ -1,0 +1,51 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-debug.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.js"></script>
+
+<h1>Account Information</h1>
+Id:<span data-bind="text:Id"></span><br>
+Name:<span data-bind="text:Name"></span><br>
+Amount:<span data-bind="text:Amount"></span><br>
+
+New Amount<input type="text" data-bind="value:Amount"/>
+
+<input type="button" id="but" value="showDetails"/><br>
+
+Deposit Amount<input type="text" id="txt" >
+<input type="button" id="bt" value="Deposit">
+
+<script>
+$(document).ready(function(){
+	$("#but").click(function(){
+		alert(accvm.Amount())
+		})
+		$("#bt").click(function(){
+			
+			accvm.Amount(Number(accvm.Amount()+Number($("#txt").val())));
+			})
+	
+});
+</script>
+
+
+ 
+
+<script>
+
+
+function accModel(id,name,amount){
+	this.Id=id;
+	this.Name=name;
+	this.Amount=amount;
+}
+function accViewModel(acc){
+	this.Id=acc.Id;
+	this.Name=acc.Name;
+	this.Amount=ko.observable(acc.Amount);
+	var a1=new accModel(124,"gopal",40000);
+	this.Accounts=[a1];
+	
+}
+var acc=new accModel(123,"Ritesh",20000);
+var accvm=new accViewModel(acc);
+ko.applyBindings(accvm);
+</script>
