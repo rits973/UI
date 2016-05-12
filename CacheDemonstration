@@ -1,0 +1,44 @@
+package controllers;
+
+import javax.inject.Inject;
+
+import models.StudentModel;
+import play.cache.CacheApi;
+import play.data.DynamicForm;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
+
+
+public class StudentController extends Controller{
+	@Inject
+	CacheApi cache;
+	
+	
+	public Result index(){
+		return ok(views.html.student.render());
+	}
+	
+	public Result showDetails(){
+		StudentModel std;
+		DynamicForm form=Form.form().bindFromRequest();
+		long id=Integer.parseInt(form.get("sid"));
+		std=(StudentModel) cache.get(Long.toString(id));
+		if(std==null){
+		 std=StudentModel.find().byId(id);
+		 if(std!=null)
+		 cache.set(Long.toString(std.getId()), std,60*1);
+		 else
+			 return ok("No Student Record Found");
+		}
+	
+		return ok(std.getName()+" "+std.getMarks()+" "+std.getResult());
+	}
+	public Result addDetails(){
+		return ok();
+	}
+	public Result deleteDetail(){
+		return ok();
+	}
+
+}
