@@ -1,0 +1,461 @@
+Create Git clone
+==================
+$ git clone --bare URL(to whom you want clone)
+
+Push the project
+=================
+$ cd *repo.git*
+$ git push --mirror URL(to whom you want to push)
+
+
+Remove tem local repository
+============================
+$ cd ..
+$ rm -rf repo.git
+
+Add a File in Repository
+=========================
+$ git add .
+
+Commit File
+============
+$ git commit -m "First commit"
+
+
+Push the Local change in your Repository
+=========================================
+$ git push origin master
+
+
+
+//Hotel hotel=new Hotel();
+		//Long id=hotel.getId();
+//List<CustomerHotelInfo> list=CustomerHotelInfo.find.where().eq("hotelid", id).findList();
+
+
+
+ffffsdf971508444655  1378      ffffsdf
+SDFSDFDDF971503222222 1379      SDFSDFDDF
+
+
+
+
+@(order:List[models.CustomerOrder])
+@import models._
+@main("Customer Dashboard","hotel"){
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
+	<div class="container-fluid">
+	    <div class="row">
+	        <div class="col-md-12">
+	            
+	        </div>
+	    </div>
+        <div class="row">
+	        <div class="col-md-12">
+	            <div class="tabbable-panel">
+				<div class="tabbable-line custom-tabline">
+                    <!----nav tabs top starts here---->
+					<ul class="nav nav-tabs ">
+						<!-- <li >
+							<a href="/hotel/hotel-Roomservices/" ><i class="fa fa-tachometer"></i>
+							Dashboard</a>
+						</li> -->
+						<li class="active">
+							<a href="/hotel/room-service/orders" ><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+							Orders</a>
+						</li>
+						<li class="active">
+							<a href="#" ><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+							Reports</a>
+						</li>
+						<!-- <li>
+							<a href="/hotel/room-service/associates/0" ><i class="fa fa-user" aria-hidden="true"></i>
+							Staff</a>
+						</li> -->
+					</ul>
+                    <!----nav tabs top ends here---->
+                    <!----tab content starts here---->
+					<div class="tab-content" id="main-hotelcontent">
+                        
+                        
+                        
+                        
+                        <!----tab orders starts here---->
+						<div class="tab-pane active" id="tab_Orders">
+							<div class="row">
+							    <div class="col-md-12">
+							        <!----orders inside tabs----->
+                                    <ul class="nav nav-tabs hotelordersnew-tab marginbot-20" role="tablist">
+                                        <li class="tab active">
+                                          <a id="" href="#orders-today" role="tab" data-toggle="tab" tabindex="0">Today's Orders</a>
+                                        </li>
+                                        <li class="tab">
+                                          <a id="" href="#orders-future" role="tab" data-toggle="tab" tabindex="-1">Future Orders</a>
+                                        </li>
+                                        <li class="tab">
+                                          <a id="" href="#orders-past" role="tab" class="personal_goals" data-toggle="tab" tabindex="-1">Past Orders</a>
+                                        </li>
+                                      </ul>
+							        <!----orders inside tabs----->
+							    </div>
+							</div>
+                            
+                            <!----orders tab content starts here---->
+                            <div class="row">
+                                <div class="col-md-12">
+                                       <div class="tab-content" id="ordernew-hotelcst">
+                                            <!----tab orders-today starts here---->
+                                            <div class="tab-pane active" id="orders-today">
+                                                <!---filter section starts here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="search-row">
+                                                            <div class="col-md-2 col-md-offset-5 col-xs-6 col-xs-offset-1">
+                                                                <div class="radio custom-radio">
+                                                                    <label><input type="radio" name="orders">Show Open Jobs </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 col-xs-5">
+                                                                <div class="radio custom-radio">
+                                                                    <label><input type="radio" name="orders"> Show All</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 col-xs-12 input-marg-xs">
+                                                                 <div id="custom-search-input">
+                                                                    <div class="input-group col-md-12">
+                                                                        <input type="text" class="  search-query form-control" placeholder="Search by Name" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-danger" type="button">
+                                                                                <span class=" glyphicon glyphicon-search"></span>
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 col-xs-12 btn-center-xs">
+                                                                <button type="button" class="btn btn-green btn-warning">Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---filter ends here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                          <table class="table table-striped">
+                                                            <thead>
+                                                              <tr>
+                                                                <th>S.No</th>
+                                                                <th>Order Number</th>
+                                                                <th>Date</th>
+                                                                <th>Customer Name</th>
+                                                                <th>Room No</th>  
+                                                                <!-- <th>Associate</th> -->
+                                                                <th>Order Type</th>
+                                                               <!--  <th>Store</th> -->
+                                                                <th>Status</th>
+                                                                <th>item(s) ordered</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            
+                                                            @for((li, count) <- order.zipWithIndex) {
+                                                            
+                                                            
+                                                              <tr>
+                                                                <td>@(count+1)</td>
+                                                                <td>@li.getOrderNumber()</td>
+                                                                <td>@li.getOrderDate()</td>
+                                                                <td>@li.getCustomerName()</td>
+                                                                <td>123</td>
+                                                                <td>@li.getOrderType()</td>
+                                                                
+                                                                <td>@li.getStatus</td>
+                                                                <td>item(s) ordered</td>
+                                                                <td>Action</td>
+                                                              </tr>
+                                                              }
+                                                              
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                           <!----tab orders-future starts here---->
+                                            <div class="tab-pane " id="orders-future">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="search-row">
+                                                            <div class="col-md-2 col-md-offset-4">
+                                                                <div class='input-group date' id='datetimepicker-start'>
+                                                                    <input type='text' name="fromDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class='input-group date' id='datetimepicker-end'>
+                                                                    <input type='text' name="toDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                 <div id="custom-search-input">
+                                                                    <div class="input-group col-md-12">
+                                                                        <input type="text" class="  search-query form-control" placeholder="Search by Name" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-danger" type="button">
+                                                                                <span class=" glyphicon glyphicon-search"></span>
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 btn-center-xs">
+                                                                <button type="button" class="btn btn-green btn-warning">Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---filter ends here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                          <table class="table table-striped">
+                                                            <thead>
+                                                              <tr>
+                                                                <th>S.No</th>
+                                                                <th>Order Number</th>
+                                                                <th>Date</th>
+                                                                <th>Customer</th>
+                                                                <th>Address</th>
+                                                                <th>Associate</th>
+                                                                <th>Order Type</th>
+                                                                <th>Store</th>
+                                                                <th>Status</th>
+                                                                <th>item(s) ordered</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              <tr>
+                                                                <td>1</td>
+                                                                <td>123</td>
+                                                                <td>12/12/2016</td>
+                                                                <td>adithya</td>
+                                                                <td>Address</td>
+                                                                <td>Associate</td>
+                                                                <td>Order Type</td>
+                                                                <td>Storem</td>
+                                                                <td>Status</td>
+                                                                <td>item(s) ordered</td>
+                                                                <td>Action</td>
+                                                              </tr>
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <!----tab orders-past starts here---->
+                                            <div class="tab-pane" id="orders-past">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="search-row">
+                                                            <div class="col-md-2 col-md-offset-4">
+                                                                <div class='input-group date' id='datetimepicker-start'>
+                                                                    <input type='text' name="fromDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class='input-group date' id='datetimepicker-end'>
+                                                                    <input type='text' name="toDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                 <div id="custom-search-input">
+                                                                    <div class="input-group col-md-12">
+                                                                        <input type="text" class="  search-query form-control" placeholder="Search by Name" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-danger" type="button">
+                                                                                <span class=" glyphicon glyphicon-search"></span>
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 btn-center-xs">
+                                                                <button type="button" class="btn btn-green btn-warning">Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---filter ends here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                          <table class="table table-striped">
+                                                            <thead>
+                                                              <tr>
+                                                                <th>S.No</th>
+                                                                <th>Order Number</th>
+                                                                <th>Date</th>
+                                                                <th>Customer</th>
+                                                                <th>Address</th>
+                                                                <th>Associate</th>
+                                                                <th>Order Type</th>
+                                                                <th>Store</th>
+                                                                <th>Status</th>
+                                                                <th>item(s) ordered</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              <tr>
+                                                                <td>1</td>
+                                                                <td>123</td>
+                                                                <td>12/12/2016</td>
+                                                                <td>adithya</td>
+                                                                <td>Address</td>
+                                                                <td>Associate</td>
+                                                                <td>Order Type</td>
+                                                                <td>Storem</td>
+                                                                <td>Status</td>
+                                                                <td>item(s) ordered</td>
+                                                                <td width="15%">
+                                                                	<div class="input-group">
+                                                                        <select class="form-control">
+                                                                            <option>Assign Staff</option>
+                                                                        </select>
+                                                                      <a href="#" class="input-group-addon btn btn-success btn-green" id="">Ok</a>
+                                                                      <a href="#" class="input-group-addon btn btn-danger" id="">
+                                                                      	<i class="fa fa-close"></i>
+                                                                      </a>
+                                                                    </div>
+                                                                </td>
+                                                              </tr>
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <!----orders tab content ends here---->
+                            
+						</div>
+                        <!----tab orders ends here---->
+                        
+                        <!----tab Staff starts here---->
+						
+					</div>
+                    <!----tab content starts here---->
+				</div>
+			</div>
+	        </div>
+	    </div>
+	</div>
+    
+	
+	<script type="text/javascript" src="/assets/javascripts/bootstrapValidator.min.js"></script>
+<script src="@routes.Assets.at("admin/js/datatables/js/jquery.dataTables.js")"></script>
+	
+	
+	
+}
+<script>
+function no(){
+	var i=0
+	return i++;
+}
+function addHotelAssociatesForm(){
+	 window.location.assign("/hotel/hotel-Roomservices/");
+}
+
+    $('#hotel-EmirateExpDate').datetimepicker({
+             format: 'YYYY-MM-DD',
+            // minDate: new Date(1900, 1 - 1, 1),CustomerOrderItems
+    		 minDate : new Date()
+         })
+	$('#hotel-addstaff').bootstrapValidator();
+    $(function(){
+        $("#upload_link").on('click', function(e){
+            e.preventDefault();
+            $("#upload:hidden").trigger('click');
+        }); });
+      $(function () {
+        $('#datetimepicker-start').datetimepicker({
+        	format: 'YYYY-MM-DD',
+        	minDate : new Date()
+        });
+        $('#datetimepicker-end').datetimepicker({
+        	format: 'YYYY-MM-DD',
+        	minDate : new Date(),
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker-start").on("dp.change", function (e) {
+            $('#datetimepicker-end').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker-end").on("dp.change", function (e) {
+            $('#datetimepicker-start').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+      function viewEmiratesModal(appUserId){
+  		//alert();
+  		$('#modal-emiratesFileId').attr('src','/get-emirates-file/'+appUserId);
+  		$('#emiratesFileModal').modal('show');
+  	}
+$(".tableFilter").dataTable();
+$('#view-room-service-staff').hide();
+
+$(function(){
+	$('#view-room-service-staff').show();
+	$('#loader').hide();
+    var oTable = $('#view-room-service-staff').dataTable({
+        "oLanguage": {
+            "sSearch": "Search all columns:"
+        },
+        "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [0]
+            } //disables sorting for column one
+],
+      
+        "sPaginationType": "full_numbers",
+        "dom": 'T<"clear">lfrtip'
+    });
+});
+
+$('#viewstaff-tab').click(function(){
+	$.get("/hotel/room-service/associates/list", function(data){
+        alert(data);
+        $('#view-room-service-staff').append(data);
+        
+    });
+	
+});
+
+
+$('#addstaff-tab').click(function(){
+$.post( "ajax/test.html", function( data ) {
+	  $( ".result" ).html( data );
+	});
+});
+
+</script>
