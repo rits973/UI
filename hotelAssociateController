@@ -1,0 +1,460 @@
+/**
+ * 
+ */
+package controllers.hotel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import models.AppUser;
+import models.CustomerOrder;
+import models.OrderStatus;
+import models.Role;
+import models.customer.Customer;
+import models.customer.CustomerHotelInfo;
+import models.hotel.Hotel;
+import models.hotel.HotelAssociate;
+
+import org.apache.commons.lang3.RandomStringUtils;
+
+import play.Logger;
+import play.data.DynamicForm;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Result;
+import util.Alert;
+import util.EmailService;
+import util.SMSService;
+import util.ValidationUtils;
+import beans.hotel.HotelAssociateBean;
+
+import com.avaje.ebean.ExpressionList;
+
+import controllers.UserController;
+
+/**
+ * @author pari
+ *
+ */
+public class HotelAssociateController extends Controller{
+
+	
+	public Result dashboard(){
+		Hotel hotel = UserController.getLoggedInUser().getHotel();
+		//TODO: implement associate dashboard
+		return ok("Associate dashboard");
+	}
+	private Result redirectAdminPage(Hotel h, String msg, int success){
+		return redirectAdminPage(h,msg,success,0l);
+	}
+	
+	private Result redirectAdminPage(Hotel hotel, String msg, int success,Long id){
+		if(null == hotel){
+			if(success==0l)
+			   return ok("Error : "+msg);
+			else
+				return ok("Success : "+msg);
+		}
+		else{
+			return redirect(controllers.hotel.routes.HotelAssociateController.addHotelStaffFrom(0));
+ 		}
+	 }
+	
+	public Result addHotelStaffFrom(Long associateId){
+		HotelAssociate hotelAssociate = null;
+		List<HotelAssociate> list = new ArrayList<HotelAssociate>();
+		if(associateId != null && associateId != 0){
+			hotelAssociate = HotelAssociate.find.where().eq("id", associateId).eq("hotel.appUser", UserController.getLoggedInUser()).findUnique() ;// byId(associateId);
+			list.add(hotelAssociate);
+			
+			}
+		final Hotel hotel = UserController.getLoggedInUser().getHotel();
+	 
+			return ok(views.html.hotel.hotelStaff.render(hotel,hotelAssociate));
+	 
+		
+	}
+	public Result gethotelRoomService(){
+		final HotelAssociate hotelAssociate = UserController.getLoggedInUser().getHotelAssociate();
+		return ok(views.html.hotel.hotelRoomServices.render());
+	}
+	public Result getlaundaryList(){
+		return ok(views.html.hotel.laundary.render());
+	}
+	public Result getreFillOrder(){
+		return ok(views.html.hotel.refillOrder.render());
+	}
+	public Result getroomCleaningOrder(){
+		return ok(views.html.hotel.roomCleaning.render());
+	}
+	
+	public Result viewhotelRoomService(Long id){
+		final HotelAssociate hotelAssociate = HotelAssociate.find.where().eq("id", id).findUnique() ;// byId(associateId);
+		return ok(views.html.hotel.hotelRoomServiceStaff.render(hotelAssociate));
+	}
+	
+	public Result getRoomServiceOrders(){
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		final Calendar tomorrow = Calendar.getInstance();
+		tomorrow.setTime(calendar.getTime());
+		tomorrow.add(Calendar.DATE, 1);
+		final HotelAssociate hotelAssociate = UserController.getLoggedInUser().getHotelAssociate();
+		Hotel hotel=Hotel.find.byId(hotelAssociate.getHotel().getId());
+		//Hotel hotel = AppUser.find.byId(UserController.getLoggedInUser().getCreatedBy()).getHotel();
+        ExpressionList<CustomerOrder> todayOrders = CustomerOrder.find.where().eq("hotel", hotel).ge("fromTime", calendar.getTime()).le("fromTime", tomorrow.getTime());		
+		//return ok(views.html.hotel.hotelRoomServiceOrders.render(todayOrders.orderBy().desc("fromTime").findList(),hotel));*/
+		
+		//Hotel hotel = AppUser.find.byId(UserController.getLoggedInUser().getCreatedBy()).getHotel();
+		
+				
+				
+				//List<CustomerHotelInfo> list=CustomerHotelInfo.find.where().eq("hotel_id", hotelAssociate.getHotel().getId()).findList();
+				//List<CustomerOrder> customerOrder=null;
+				//List<CustomerOrder> orders=new ArrayList<>();
+				//for(CustomerHotelInfo li:list){
+					
+					//customerOrder=CustomerOrder.find.where().eq("customer_id", li.getCustomer().getId()).findList();
+					//orders.addAll(customerOrder);
+				//}
+        
+        
+        
+        
+        final ExpressionList<CustomerOrder> pastOrderQuery = CustomerOrder.find.where().eq("hotel", hotel).le("fromTime",calendar.getTime());
+        Logger.info("past orders "+pastOrderQuery.findRowCount());
+        final DynamicForm requestData = Form.form().bindFromRequest();
+        Logger.info("requeted data"+requestData);
+        if(requestData.get("search") != null && !requestData.get("search").trim().isEmpty()){
+			pastOrderQuery.like("customerorder.hotelId","%" + requestData.get("search").trim().toLowerCase()+ "%");
+			 //pastOrderQuery.like("appUser.name", "%" + requestData.get("search").trim().toLowerCase() + "%");
+		}
+        
+        
+        
+        
+        
+        
+			return ok(views.html.hotel.hotelRoomServiceOrders.render(todayOrders.orderBy().desc("fromTime").findList(),pastOrderQuery.findList(),hotel));
+				
+	}
+	
+	public Result getHotelCustomerPastOrdes(){
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		Hotel hotel = AppUser.find.byId(UserController.getLoggedInUser().getCreatedBy()).getHotel();
+		final ExpressionList<CustomerOrder> pastOrderQuery = CustomerOrder.find.where().eq("hotel", hotel).le("fromTime",calendar.getTime());
+		Logger.info("past orders "+pastOrderQuery.findRowCount());
+		final DynamicForm requestData = Form.form().bindFromRequest();
+		if(requestData.get("openorders")!=null && !requestData.get("openorders").trim().isEmpty()){
+			pastOrderQuery.eq("status", OrderStatus.WAITING);
+		}
+		Logger.debug(""+requestData);
+		if(requestData.get("search") != null && !requestData.get("search").trim().isEmpty()){
+			// pastOrderQuery.like("customerorder.hotelId","%" + requestData.get("search").trim().toLowerCase()+ "%");
+			 //pastOrderQuery.like("appUser.name", "%" + requestData.get("search").trim().toLowerCase() + "%");
+		}
+		if(requestData.get("allorders")!=null && requestData.get("allorders").trim().isEmpty()){
+			pastOrderQuery.findList();
+			Logger.info("allorders :"+pastOrderQuery.findRowCount());
+		}
+		Logger.debug("pastOrders "+pastOrderQuery.findRowCount());
+		return ok(views.html.hotel.hotelRoomServiceOrders.render(pastOrderQuery.findList(),pastOrderQuery.findList(),hotel));
+		}
+	
+	public Result getRoomServiceAssociates(Long associateId){
+		HotelAssociate hotelAssociate = null;
+		if(associateId != null && associateId != 0){
+			hotelAssociate = HotelAssociate.find.where().eq("id", associateId).findUnique() ;// byId(associateId);
+			}
+//				UserController.getLoggedInUser().getHotelAssociate()
+//		Logger.info("Associate::: " + hotelAssociate) ;
+		return ok(views.html.hotel.hotelRoomServiceStaff.render(hotelAssociate));
+	}
+	
+	/**
+	 * Method used to save the Hotel Asoociate
+	 * @return {@link Result}
+	 */
+	public Result saveHotelAssociate(){
+		
+		Hotel hotel = UserController.getLoggedInUser().getHotel();
+		final Form<HotelAssociateBean> associateForm = Form.form(HotelAssociateBean.class).bindFromRequest();
+		final HotelAssociateBean bean = associateForm.get();
+		final MultipartFormData body  = request().body().asMultipartFormData();
+		Logger.info(associateForm.toString());																																																																																																																																																																																																			
+		
+		Boolean email= false,mobile = false;		
+		final String password = RandomStringUtils.randomAlphanumeric(5).toLowerCase();
+//		final String mobileOTP = RandomStringUtils.randomNumeric(5).toLowerCase();
+		Logger.info("password: " + password );
+		
+		if(ValidationUtils.validateEmail(bean.userName)){
+			flash().put("alert", new Alert("alert-danger", bean.userName.trim() + " User Name is already existed.").toString());
+			return redirectAdminPage(hotel, bean.userName.trim() + " User Name is already existed.", 0);
+		}
+		if(ValidationUtils.validateEmail(bean.email)){
+			flash().put("alert", new Alert("alert-danger", bean.email.trim() + " Email already existed.").toString());
+			return redirectAdminPage(hotel, bean.email.trim() + " Email already existed.", 0);
+		}else{
+			email = true;
+		}
+		if(ValidationUtils.validateMobile(bean.mobile)){
+			flash().put("alert", new Alert("alert-danger", bean.mobile.trim() + " Mobile already existed.").toString());
+			return redirectAdminPage(hotel, bean.mobile.trim() + " Mobile already existed.", 0);
+		}else{
+			mobile = true;
+		}
+		if(ValidationUtils.validateEmiratesID(bean.emiratesId)){
+			flash().put("alert", new Alert("alert-danger", bean.emiratesId.trim() + " Emirated ID already existed.").toString());
+			return redirectAdminPage(hotel, bean.emiratesId.trim() + "  Emirated ID already existed.", 0);
+		}
+		
+		final HotelAssociate hotelAssociate = bean.toHotelAssociate(hotel==null?0l:hotel.getId());
+		final AppUser appUser = hotelAssociate.getAppUser();
+		appUser.setPassword(password);
+//		appUser.setMobileOTP(mobileOTP);
+		appUser.setCreatedBy(UserController.getLoggedInUser().getId());
+		appUser.update();
+		Logger.info("STAFF ID : "+hotelAssociate.getId());	
+		if(mobile){
+			Logger.info("Sending OTP to mobile************");
+			SMSService.sendCredentialSMS(appUser, password);
+		}
+		if(email){
+			Logger.info("Sending credentials to email******");
+			EmailService.sendUserCredentilalEMail(appUser, password, "Email Confirmation : Jugaad.ae");
+			Logger.info("Sending activation mail******");
+			EmailService.sendEmailVerifivation(appUser.getEmail(), appUser.getId());
+//			SMSService.sendCredentialSMS(appUser, password);
+		}
+		
+		if(hotelAssociate != null){
+			if(body.getFile("licFileName") != null){
+				if(!HotelAssociate.updateEmiratesFile(hotelAssociate, body)){
+					flash().put("alert",new Alert("alert-danger","Something went wrong while uploading Lic file.").toString());
+					return redirectAdminPage(hotel, "Something went wrong while uploading Lic file.", 0);
+				}
+			}		
+			if(body.getFile("servicepersonalImage") != null){
+				if(!HotelAssociate.updateImageFile(hotelAssociate, body)){
+					flash().put("alert",new Alert("alert-danger","Something went wrong while uploading Personal Image file.").toString());
+					redirectAdminPage(hotel, "Something went wrong while uploading Personal Image file.", 0);
+				}
+			}
+			if(bean.emiratesExpiryDate != null){
+				try {
+					hotelAssociate.setEmiratesExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse(bean.emiratesExpiryDate));
+					hotelAssociate.update();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			flash().put("alert",new Alert("alert-success",hotelAssociate.getAppUser().getName()+" created successfully.").toString());
+		}
+		
+		if(UserController.getLoggedInUserRole().equals(Role.ROOM_SERVICE)){
+			//return ok(views.html.hotel.hotelRoomServices.render(hotelAssociate));
+			return redirect(controllers.hotel.routes.HotelAssociateController.viewhotelRoomService(hotelAssociate.getId()));
+		}else{
+			return redirectAdminPage(hotel, hotelAssociate.getAppUser().getName()+" created successfully.", 1,hotelAssociate.getId());	
+		}
+		
+
+ 	}
+
+	/**
+	 * Update Hotel Associate details
+	 * @param id ID of the associate
+	 * @return Returns success if associate details are updated
+	 */
+	public  Result updateHotelAssociate(Long id) {
+		
+		final MultipartFormData body  = request().body().asMultipartFormData();
+		final Map<String,String[]> requestMap = body.asFormUrlEncoded();
+		String name = requestMap.get("name")[0];
+		String userName = requestMap.get("userName")[0];
+		String email = requestMap.get("email")[0];
+		String mobile = requestMap.get("mobile")[0];
+		Role role = Role.valueOf(requestMap.get("role")[0]);
+		String emiratesID = requestMap.get("emiratesId")[0];
+		String emiratesExpiryDate = requestMap.get("emiratesExpiryDate")[0];
+		String associateType = requestMap.get("associateType")[0];
+		Boolean emailFlag= false, mobileFlag = false;		
+		final HotelAssociate hotelAssociate = HotelAssociate.find.byId(id);
+		Hotel hotel = UserController.getLoggedInUser().getHotel();
+		if(hotelAssociate != null){
+			if(body.getFile("licFileName") != null){
+				if(!HotelAssociate.updateEmiratesFile(hotelAssociate, body)){
+					flash().put("alert",new Alert("alert-danger","Something went wrong while uploading Lic file.").toString());
+					return redirectAdminPage(hotel, "Something went wrong while uploading Lic file.", 0);
+				}
+			}	
+			if(body.getFile("servicepersonalImage") != null){
+				if(!HotelAssociate.updateImageFile(hotelAssociate, body)){
+					flash().put("alert",new Alert("alert-danger","Something went wrong while uploading Personal Image file.").toString());
+					redirectAdminPage(hotel, "Something went wrong while uploading Personal Image file.", 0);
+				}
+			}
+			if(!userName.equals(hotelAssociate.getAppUser().getUserName())){
+				Logger.info("userName: " + userName + ", appuserName: " + hotelAssociate.getAppUser().getUserName());
+				if(ValidationUtils.validateEmail(userName)){
+					flash().put("alert", new Alert("alert-danger", userName.trim() + " User Name is already existed.").toString());
+					return redirectAdminPage(hotel, userName.trim() + " User Name is already existed.", 0);
+				}
+				hotelAssociate.getAppUser().setUserName(userName);
+			}
+			if(!name.equals(hotelAssociate.getAppUser().getName())){
+				hotelAssociate.getAppUser().setName(name);
+			}
+			if(!email.equals(hotelAssociate.getAppUser().getEmail())){
+				if(ValidationUtils.validateEmail(email)){
+					flash().put("alert", new Alert("alert-danger", email.trim() + " Email already existed.").toString());
+					return redirectAdminPage(hotel, email.trim() + " Email already existed.", 0);
+				}else{
+					emailFlag = true;
+				}
+				hotelAssociate.getAppUser().setEmail(email);
+			}
+			if(!mobile.equals(hotelAssociate.getAppUser().getMobileNumber())){
+				if(ValidationUtils.validateMobile(mobile)){
+					flash().put("alert", new Alert("alert-danger", mobile.trim() + " Mobile already existed.").toString());
+					return redirectAdminPage(hotel, mobile.trim() + " Mobile already existed.", 0);
+				}else{
+					mobileFlag = true;
+				}
+				hotelAssociate.getAppUser().setMobileNumber(mobile);
+			}
+			if(!role.equals(hotelAssociate.getAppUser().getRole())){
+				hotelAssociate.getAppUser().setRole(role);
+			}
+			if(!associateType.equals(hotelAssociate.getAssociateType())){
+				hotelAssociate.setAssociateType(associateType);
+			}
+			if(!emiratesID.equals(hotelAssociate.getAppUser().getEmiratesId())){
+				hotelAssociate.getAppUser().setEmiratesId(emiratesID);
+			}
+			if(!emiratesExpiryDate.equals(hotelAssociate.getEmiratesExpiryDate())){
+				try {
+					hotelAssociate.setEmiratesExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse(emiratesExpiryDate));
+					hotelAssociate.update();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if(mobileFlag || emailFlag){
+				final String password = RandomStringUtils.randomAlphanumeric(5).toLowerCase();
+				final String mobileOTP = RandomStringUtils.randomNumeric(5).toLowerCase();
+				Logger.info("password: " + password + ", mobileOTP: " + mobileOTP);
+				if(mobileFlag){
+					Logger.info("Sending OTP to mobile************");
+					SMSService.sendCredentialSMS(hotelAssociate.getAppUser(), password);
+				}
+				if(emailFlag){
+					Logger.info("Sending credentials to email******");
+					EmailService.sendUserCredentilalEMail(hotelAssociate.getAppUser(), password, "Email Confirmation : Jugaad.ae");
+				}
+				hotelAssociate.getAppUser().setPassword(password);
+				hotelAssociate.getAppUser().setMobileOTP(mobileOTP);
+			}
+			hotelAssociate.getAppUser().update();
+			
+			flash().put("alert",new Alert("alert-success",hotelAssociate.getAppUser().getName()+" updated successfully.").toString());
+		}
+
+		if(UserController.getLoggedInUserRole().equals(Role.ROOM_SERVICE)){
+			//return ok(views.html.hotel.hotelRoomServices.render(hotelAssociate));
+			return redirect(controllers.hotel.routes.HotelAssociateController.viewhotelRoomService(hotelAssociate.getId()));
+		}else{
+			return ok(views.html.hotel.hotelStaff.render(hotel,hotelAssociate));
+		}
+	}
+	
+	/**
+	 * Controller Method used to remove staff from hotel
+	 * @return Returns {@link Result}
+	 */
+	public Result removeOrDisableHotelAssociate(){
+		
+	    String id = request().getQueryString("staffId");
+		Logger.info("Removing staff from hotel::::Staff ID::::::::::::::::: " + id);
+		final HotelAssociate hotelAssociate = HotelAssociate.find.byId(Long.parseLong(id));
+		HotelAssociate.removeOrDisableHotelAssociate(Long.parseLong(id));
+		flash().put("alert",new Alert("alert-success","Associate " + hotelAssociate.getAppUser().getName()+" has been removed successfully.").toString());
+		if(UserController.getLoggedInUserRole().equals(Role.ROOM_SERVICE)){
+			return redirect(controllers.hotel.routes.HotelAssociateController.viewhotelRoomService(0));
+		}else{
+		return redirect(controllers.hotel.routes.HotelAssociateController.addHotelStaffFrom(0));
+		}
+	}
+	
+	public Result getRoomServiceAssociateList(){
+		
+		return ok("" + new HotelAssociate().getHotelRoomServiceAssociates());
+	}
+	
+	public Result assignStaffToOrder(Long orderId, Long asscoiateId){
+		Logger.debug("order id "+orderId+" Asscoiate id"+asscoiateId);
+		final CustomerOrder order = CustomerOrder.find.byId(orderId);
+		if(order != null){
+			HotelAssociate associate = order.getHotelAssociate();
+			if(associate!=null){
+				//send cancel order notification and sms to staff(already assigned staff )
+				
+			}else{
+				final  HotelAssociate associate1  = HotelAssociate.find.byId(asscoiateId);
+				order.setHotelAssociate(associate1);
+				order.setStatus(OrderStatus.ACCEPTED);
+				order.update();
+			}
+		}else{
+			return ok("0");
+		}
+		return ok("1");
+	}
+	public Result searchCustomerByName(){
+		DynamicForm form = Form.form().bindFromRequest();
+		String name=form.get("search");
+		
+		Customer customer=null;
+		List<AppUser> users=new ArrayList<>();
+		AppUser user=null;
+		
+		Hotel hotel = UserController.getLoggedInUser().getHotel();
+		
+		List<CustomerHotelInfo> infoList = CustomerHotelInfo.find.where().eq("hotel", hotel).findList();
+		for(CustomerHotelInfo li:infoList){
+			
+		customer=Customer.find.byId(li.getCustomer().id);
+		user=AppUser.find.where().eq("id", customer.getAppUser().getId()).eq("name", "ritesh").findUnique();
+		if(user!=null&&users!=null)
+			users.add(user);
+		}
+		
+		if(users.size()>0){
+			for(AppUser usr:users)
+	        System.out.println("User found with given name======================>"+usr.getName());
+		}
+		else{
+			System.out.println("No name matched with given input");
+		}
+		
+		return ok("welcome");
+		
+	}
+			
+}
+																			
