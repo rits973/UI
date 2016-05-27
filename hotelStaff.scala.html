@@ -1,0 +1,489 @@
+@(hotel : models.hotel.Hotel ,associate : models.hotel.HotelAssociate)
+@main("Hotel Dashboard","Hotel Dashboard"){
+<link href="/assets/stylesheets/jquery.dataTables.css" type="text/css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable-panel">
+                <div class="tabbable-line custom-tabline">
+                    <ul class="nav nav-tabs ">
+                        <li >
+                            <a href="/hotel/hotel-admin/dashboard" ><i class="fa fa-tachometer"></i>
+                            Dashboard</a>
+                        </li>
+                        <li >
+                            <a href="/hotel/hotel-admin/customer" ><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            Add Customer</a>
+                        </li>
+                        <li>
+                            <a href="/hotel/hotel-admin/hotel-restaurant-vendor" ><i class="fa fa-user" aria-hidden="true"></i>
+                            Restaurant</a>
+                        </li>
+                        <li class="active">
+                            <a href="/hotel/hotel-admin/hotel-add-staff/0" ><i class="fa fa-user" aria-hidden="true"></i>
+                            Staff</a>
+                        </li>
+                        <li>
+                        	<a href="/hotel/hotel-admin/hotel-customer-orders"><i class="fa fa-chevron-down" aria-hidden="true"></i>View Customer Orders </a>
+                        </li>
+                    </ul>
+                    
+                     <div class="tab-content common-tabcontent" id="">
+                        <div class="tab-pane active" id="">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!----orders inside tabs----->
+                                        <ul class="nav nav-tabs hotelordersnew-tab marginbot-20" role="tablist">
+                                            <li class="tab active">
+                                              <a id="" href="#staff-addstaff" role="tab" data-toggle="tab" tabindex="0">Add Staff</a>
+                                            </li>
+                                            <li class="tab">
+                                              <a id="" href="#view-viewstaff" role="tab" data-toggle="tab" tabindex="-1">View Staff</a>
+                                            </li>
+                                          </ul>
+                                        <!----orders inside tabs----->
+                                    </div>
+                                </div>
+                            <!---restaurant inner tab content------>
+                              <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-content common-tabcontent" id="">
+                                    <!----tab Dashboard starts here---->
+                                        <div class="tab-pane active" id="staff-addstaff">
+                                            
+                                                <!--Personal Details-->
+                                            @if(associate != null){
+                                            <form class="form-horizontal" action="@controllers.hotel.routes.HotelAssociateController.updateHotelAssociate(associate.getId())" method="post" id="addstaffForm-hotel" enctype="multipart/form-data">	
+                                            }else{
+                                                <form class="form-horizontal" action="@controllers.hotel.routes.HotelAssociateController.saveHotelAssociate()" method="post" id="addstaffForm-hotel" enctype="multipart/form-data">
+                                              }
+
+                                                    <fieldset>
+                                                    <!-- Form Name -->
+                                                    	<h4 class="classic-title"><span>Enter Staff Personal Details</span>
+			@if(associate != null){<a href="#" class="editdetails pull-right" onclick=""><i class="fa fa-pencil"></i>Edit Details</a>}</h4>
+                                                    <div class="col-md-7 col-md-offset-2">
+                                                    <!-- Name-->
+                                                    @if(associate != null){
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Name">Name</label>  
+                                                      <div class="col-md-8">
+                                                        <input id="name" name="name" type="text"  placeholder="Enter Staff Name" class="form-control input-md editstaff" disabled @if(associate != null){value="@associate.getAppUser().getName()"} required/>
+                                                      </div>
+                                                    </div>
+                                                    }else{
+                                                <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Name">Name</label>  
+                                                      <div class="col-md-8">
+                                                        <input id="name" name="name" type="text" autocomplete="off" placeholder="Enter Staff Name" class="form-control input-md" required @if(associate != null){value="@associate.getAppUser().getName()"}/>
+                                                      </div>
+                                                    </div>
+                                                    }
+                                                    @if(associate != null){
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Name">User Name</label>  
+                                                      <div class="col-md-8">
+                                                        <input id="name" name="userName" type="text"  placeholder="Enter Staff User Name" class="form-control input-md editstaff" disabled @if(associate != null){value="@associate.getAppUser().getUserName()"} required/>
+                                                      </div>
+                                                    </div>
+                                                    }else{
+                                                <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Name">User Name</label>  
+                                                      <div class="col-md-8">
+                                                        <input id="name" name="userName" type="text" autocomplete="off" placeholder="Enter Staff User Name" class="form-control input-md" required @if(associate != null){value="@associate.getAppUser().getUserName()"}/>
+                                                      </div>
+                                                    </div>
+                                                    }
+                                                    @if(associate != null){
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="mobile">Email</label>  
+                                                      <div class="col-md-8">
+                                                      <input id="email" name="email" type="email" placeholder="Enter Email Id" class="form-control input-md editstaff"  disabled @if(associate != null){value="@associate.getAppUser().getEmail()"}/>
+
+                                                      </div>
+                                                    </div>
+                                                    }else{
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="mobile">Email</label>  
+                                                      <div class="col-md-8">
+                                                      <input id="email" name="email" type="email" autocomplete="off" placeholder="Enter Email Id" class="form-control input-md" required  @if(associate != null){value="@associate.getAppUser().getEmail()"}/>
+                                                        </div>
+                                                    </div>
+                                                    }
+
+
+                                                    @if(associate != null){
+                                                    <!-- Mobile Number-->
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="mobile">Mobile Number</label> 
+                                                      <div class="col-md-8">
+                                                       <div class="input-group col-md-12"> 
+                                                                    <span class="input-group-addon">     
+                                                                         +971     
+                                                                      </span>
+                                                                      <span class="input-group-addon nopad">     
+                                                                          <select id="prefix" name="mobileCode" disabled class="editstaff">						         					  
+                                                                             <option value="50" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("50")){selected}>50</option>
+                                                                            <option value="52" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("52")){selected}>52</option>
+                                                                             <option value="55" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("55")){selected}>55</option>
+                                                                              <option value="56" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("56")){selected}>56</option>
+                                                                          </select>     
+                                                                      </span>
+                                                                     <input id="mobile" name="mobile" type="text"  disabled class="form-control input-md editstaff" onkeypress="return isNumberKey(event)" placeholder="Enter Staff Mobile Number" pattern="[0-9]{7}" maxlength="7" title="Enter 7 numbers"  @if(associate != null){value="@associate.getAppUser().getMobileNumber()"}/>
+                                                                    </div>	
+                                                          </div>
+                                                    </div>
+                                                    }else{
+                                                            <!-- Mobile Number-->
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="mobile">Mobile Number</label> 
+                                                      <div class="col-md-8">
+                                                       <div class="input-group"> 
+                                                                    <span class="input-group-addon">     
+                                                                         +971     
+                                                                      </span>
+                                                                      <span class="input-group-addon nopad">     
+                                                                          <select id="prefix" name="mobileCode">						         					  
+                                                                             <option value="50" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("50")){selected}>50</option>
+                                                                                                      <option value="52" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("52")){selected}>52</option>
+                                                                                                      <option value="55" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("55")){selected}>55</option>
+                                                                                                      <option value="56" @if(associate != null && associate.getAppUser() != null && associate.getAppUser().getMobileCode() != null && associate.getAppUser().getMobileCode().equalsIgnoreCase("56")){selected}>56</option>
+                                                                          </select>     
+                                                                      </span>
+                                                                     <input id="mobile" autocomplete="off" name="mobile" type="text" placeholder="Enter Staff Mobile Number" pattern="[0-9]{7}" onkeypress="return isNumberKey(event)" maxlength="7" title="Enter 7 numbers" class="form-control input-md" required  @if(associate != null){value="@associate.getAppUser().getMobileNumber()"}/>
+                                                                    </div>	
+                                                          </div>
+                                                    </div>
+                                                    }
+
+                                                    <!-- Emirates ID-->
+                                                @if(associate != null){			
+                                                    <!-- Emirates ID-->
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Emirates ID">Emirates ID</label>  
+                                                      <div class="col-md-8">
+                                                      <input id="emiratesId" name="emiratesId" type="text" autocomplete="off" onkeypress="return isNumberKey(event);" placeholder="Enter Your Emirates ID" class="form-control input-md editstaff" disabled  required  @if(associate != null){value="@associate.getAppUser().getEmiratesId()"} />																													
+                                                      </div>
+                                                    </div>
+                                                    }else{
+
+                                                    <!-- Emirates ID-->
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Emirates ID">Emirates ID</label>  
+                                                      <div class="col-md-8">
+                                                      <input id="emiratesId" name="emiratesId" type="text" autocomplete="off" onkeypress="return isNumberKey(event);" placeholder="Enter Your Emirates ID" class="form-control input-md" required value=""/>
+
+                                                      </div>
+                                                    </div>
+                                                    }
+                                                @if(associate != null){		
+                                                    <div class="form-group">	
+                                                    <!-- Emirates ID Expiry -->
+                                                    <label class="col-md-4 control-label" for="Emirates ID">Emirates Expiry Date</label> 
+                                                       <div class="col-md-8 date">
+                                                         <div class="input-group input-append date" id="endDatePicker">
+                                                            <input type='text' class="form-control editstaff" name="emiratesExpiryDate"  onkeypress="return preventkeys(event);" disabled @if(associate != null && associate.getEmiratesExpiryDate() != null){value="@associate.getEmiratesExpiryDate().format("yyyy-MM-dd")"} required/>
+                                                            <span class="input-group-addon add-on"><span class="fa fa-calendar"></span></span>
+                                                        </div>
+                                                      </div>
+                                                     </div>
+                                                    }else{
+                                                    <div class="form-group">
+                                                    <label class="col-md-4 control-label" for="Emirates ID">Emirates Expiry Date</label>
+                                                    <div class="col-md-8 date">
+                                                         <div class="input-group input-append date" id="endDatePicker">
+                                                            <input type='text' class="form-control editstaff" name="emiratesExpiryDate"  onkeypress="return preventkeys(event);" @if(associate != null && associate.getEmiratesExpiryDate() != null){value="@associate.getEmiratesExpiryDate().format("yyyy-MM-dd")"} required/>
+                                                            <span class="input-group-addon add-on"><span class="fa fa-calendar"></span></span>
+                                                        </div>
+                                                      </div>
+                                                     </div>
+                                                    }
+
+
+                                                    @if(associate != null ){		
+
+                                                        <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Branch">Staff type</label>
+                                                      <div class="col-md-8">
+                                                        <select id="Branch" name="role" disabled class="form-control editstaff" required >
+
+                                                        <option value="" selected="selected">Select Staff Type</option>
+                                                         <option value="CASHIER" @if(associate.getAppUser().getRole() != null && associate.getAppUser().getRole().toString().equalsIgnoreCase("CASHIER") ){selected}  >CASHIER</option>
+                                                         <option value="RECEPTIONIST" @if(associate.getAppUser().getRole() != null && associate.getAppUser().getRole().toString().equalsIgnoreCase("RECEPTIONIST") ){selected}  >RECEPTIONIST</option>
+                                                         <option value="ROOM_SERVICE" @if(associate.getAppUser().getRole() != null && associate.getAppUser().getRole().toString().equalsIgnoreCase("ROOM_SERVICE") ){selected}  >ROOM_SERVICE</option>
+
+                                                         </select>
+
+                                                      </div>
+                                                    </div>
+                                                    }else{
+
+                                                        <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Branch">Staff type</label>
+                                                      <div class="col-md-8">
+                                                        <select id="Branch" name="role" class="form-control" required >
+                                                          <option value="" selected="selected">Select Staff Type</option>
+                                                          <option value="CASHIER" >CASHIER</option>
+                                                          <option value="RECEPTIONIST" >RECEPTIONIST</option>
+                                                          <option value="ROOM_SERVICE" >ROOM_SERVICE</option>
+
+                                                        </select>
+                                                      </div>
+                                                    </div>
+                                                    } 
+                                             <input type="hidden" name="associateType" >
+                                                    <!-- Emirates ID-->
+                                                    @if(associate != null){
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Emirates_ID">Upload Emirates ID</label>  
+                                                      <div class="col-md-8">
+                                                      <input id="upload Emirates_ID" name="licFileName" type="file"  class="form-control input-md editstaff" disabled >
+                                                        @if(associate.getAppUser().getEmiratesFile() != null){
+                                                      <h6><a style="cursor:pointer;" class="color-green txt-capt" onclick="viewEmiratesModal('@associate.getAppUser().getId()');">View EmiratesId</a></h6>
+                                                      }
+                                                      </div>
+                                                    </div>
+                                                    }else{
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="Emirates_ID">Upload Emirates ID</label>  
+                                                       <div class="col-md-8">
+                                                      <input id="upload Emirates_ID" name="licFileName" type="file" autocomplete="off"   class="form-control input-md"  required >
+
+                                                      </div>
+                                                    </div>
+                                                    }
+                                                    <div class="form-group">
+                                                      <label class="col-md-4 control-label" for="buttons"></label>
+                                                      <div class="col-md-8 text-center">
+
+                                                        @if(associate != null){
+                                                        <input type="submit" @*onclick="disableButton('submit-button');"*@ name="buttons1" disabled class="btn btn-primary btn-green editstaff" value="Update"/>
+                                                        }else{
+                                                        <input type="submit" @*onclick="disableButton('submit-button');"*@ name="buttons1" class="btn btn-primary btn-green" value="Save"/>
+                                                        }
+
+                                                        <button type="button" onclick="location.reload();" id="button2id" name="button2id" class="btn btn-gray editstaff" data-toggle="modal" data-target="#bs-example-modal-lg">Cancel</button>
+
+
+                                                      </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                    <div class=" service_pic">
+
+                                        <!-- 			<img src="@routes.Assets.at("images/jugaad-one-site-for-all-your-domestic-staff-service-needs-jugaad-ae-jugaad-dubai-jugaad-uae_avatar.jpg") alt="Service"/> -->
+                                        <!--                 <input type="file" name="servicepersonalImage" class="uploadimg"/> -->
+
+                                                            @if(associate != null){
+                                                    <img @if(associate!= null && associate.getAppUser().getId() != null){src="@routes.PublicController.getPersonalImage(associate.getAppUser().getId())"}else{src="@routes.Assets.at("images/jugaad-one-site-for-all-your-domestic-staff-service-needs-jugaad-ae-jugaad-dubai-jugaad-uae_avatar.jpg")"} alt="Service"/>
+                                                       <!--<input type="file" name="servicepersonalImage" class="uploadimg editstaff" disabled/>-->
+                                                        <div>
+                                                            <input id="upload" type="file" name="servicepersonalImage" class="uploadimg editstaff" disabled/>
+                                                            <a href="#"  id="upload_link" class="btn btn-success btn-green" >
+                                                            Upload an image</a>
+                                                        </div>
+                                                    }else{
+                                                    <img @if(associate!= null && associate.getAppUser().getId() != null){src="@routes.PublicController.getPersonalImage(associate.getAppUser().getId())"}else{src="@routes.Assets.at("images/jugaad-one-site-for-all-your-domestic-staff-service-needs-jugaad-ae-jugaad-dubai-jugaad-uae_avatar.jpg")"} alt="Service"/>
+                                                        <!--<input type="file" name="servicepersonalImage" class="uploadimg"/>-->
+                                                        <div>
+                                                            <input id="upload" type="file" name="servicepersonalImage" class="uploadimg"/>
+                                                            <a href="#"  id="upload_link" class="btn btn-success btn-green" >
+                                                            Upload an image</a>
+                                                        </div>
+                                                    }              
+
+
+                                                     </div>
+                                                    </div>
+                                                    </fieldset>
+                                                    </form>
+		
+                                            <!--Personal Details-->
+                                            
+                                            <!----inside add staff starts here---->
+                                            
+                                        </div>
+                                        
+                                        
+                                        <!-----view staff tab starts here---->
+                                        <div class="tab-pane" id="view-viewstaff">
+                                            
+                                            <div class="row">
+                                                <div class="col-md-10 col-md-offset-1">
+                                                   <div class="table-responsive">
+                                                        <table class="table table-bordered tableFilter width100" id="view-staff">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>S.NO#</th>
+                                                                    <th>Name</th>
+                                                                    <th>Emirates ID</th>
+                                                                    <th >Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                    
+  	@for((staff,index) <- hotel.getHotelAssociates().zipWithIndex){
+	<tr>
+			<td>@staff.getId()</td>
+			<td id="name@staff.getId()">@if(staff.getAppUser() != null){@staff.getAppUser().getName()}</td>                             
+			<td>@if(staff.getAppUser() != null){@staff.getAppUser().getEmiratesId()}</td>
+			<td class="text-center"><a href="@controllers.hotel.routes.HotelAssociateController.addHotelStaffFrom(staff.getId())">View</a> &nbsp;&nbsp;| &nbsp; &nbsp;
+			<a onclick="deleteModal(@staff.getId());" style="color:red;cursor:pointer;">Delete</a>
+			
+		</tr>
+	}	
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <!-----view staff tab starts here---->
+                                    </div>
+                                </div>
+                            </div>
+                            <!---restaurant inner tab content------>
+                         </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	<!-- Emirates file modal starts -->
+	
+	<div id="emiratesFileModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">c Id</h4>
+      </div>
+      <div class="modal-body">
+      	<div class="Emirated-imgdiv">
+       		<img id="modal-emiratesFileId" class="img-resonsive"/>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Emirates file modal ends -->
+<!-- <script src="@routes.Assets.at("admin/js/datatables/js/jquery.dataTables.js")"></script>  -->
+	<script type="text/javascript" src="/assets/javascripts/bootstrapValidator.min.js"></script>
+	<script>
+	
+
+         $(function(){
+            
+        $("#upload_link").on('click', function(e){
+            e.preventDefault();
+            $("#upload:hidden").trigger('click');
+        }); });
+    $(function () {
+        $('#endDatePicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+          //	 minDate: new Date(1900, 1 - 1, 1),
+			// maxDate : new Date()
+        }).on("dp.change", function (e) {
+       	 $('#addstaffForm-hotel').bootstrapValidator('validate');
+ 			 $('#addstaffForm-hotel').bootstrapValidator('revalidateField', 'emiratesExpiryDate');
+        });
+         $('#emiratesExpiryDate').datetimepicker({
+            format: 'YYYY-MM-DD',
+           // minDate: new Date(1900, 1 - 1, 1),
+   		 minDate : new Date()
+        })  
+    });
+	function addHotelAssociatesForm(){
+		 window.location.assign("/hotel/hotel-admin/hotel-add-staff/0");
+}
+ 
+	$(".editdetails").click(function(event){
+		   event.preventDefault();
+		   $('.editstaff').prop("disabled", false); // Element(s) are now enabled.
+		});
+
+	function viewEmiratesModal(appUserId){
+		//alert();
+		$('#modal-emiratesFileId').attr('src','/get-emirates-file/'+appUserId);
+		$('#emiratesFileModal').modal('show');
+	}
+	$('#view-staff').hide();
+ 
+	$(function() {
+	    $('.editdetails').click(function() {
+	        $('.editstaff').toggleisabled();
+	    });
+	});
+	$(function(){
+		$('#view-staff').show();
+		$('#loader').hide();
+	    var oTable = $('#view-staff').dataTable({
+	        "oLanguage": {
+	            "sSearch": "Search all columns:"
+	        },
+	        "aoColumnDefs": [
+	            {
+	                'bSortable': false,
+	                'aTargets': [0]
+	            } //disables sorting for column one
+	],
+	      
+	        "sPaginationType": "full_numbers",
+	        "dom": 'T<"clear">lfrtip'
+	    });
+	});
+	
+	    function deleteModal(staffId){
+	    	//$('#delete-staff-submit').show();
+	    	var name = $('#name'+staffId).text();
+	    	console.log(name +" : name : staffId : "+staffId);
+	    	$('#staffId').val(staffId);
+	    	$('#modal-title').text('Delete Staff '+name);
+	    	$('#delete-staff-submit').addClass('btn-danger').removeClass('btn-success').text('Delete');
+	    	$('#delete-staff-modal-body').html("Do you want to delete "+name+"?");
+			$('#delete-staff-submit').show();
+			$('#delete-staff').modal('show');
+	    }
+	</script>
+
+	}
+	
+	
+	
+<!--Delete/Disable Associate Modal -->
+<div id="delete-staff" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modal-title">Delete Staff</h4>
+      </div>
+      <form action="/hotel/associates/status" id="modal-form">
+      <div class="modal-body">
+        <h5 id="delete-staff-modal-body"></h5>
+      </div>
+      <input type="hidden" name="staffId" id="staffId"/>
+      <div class="modal-footer">
+      <button type="submit" class="btn btn-danger" id="delete-staff-submit">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<script>
+ $('#addstaffForm-hotel').bootstrapValidator();
+//     $(".tableFilter").dataTable();
+</script>

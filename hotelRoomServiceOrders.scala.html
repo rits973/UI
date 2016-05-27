@@ -1,0 +1,295 @@
+@(orderList : List[models.CustomerOrder],orderList1 : List[models.CustomerOrder],hotel : models.hotel.Hotel)
+@main("Customer Dashboard","hotel"){
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
+	<div class="container-fluid">
+	    <div class="row">
+	        <div class="col-md-12">
+	            
+	        </div>
+	    </div>
+        <div class="row">
+	        <div class="col-md-12">
+	            <div class="tabbable-panel">
+				<div class="tabbable-line custom-tabline">
+                    <!----nav tabs top starts here---->
+					<ul class="nav nav-tabs ">
+						
+						<li class="active">
+							<a href="/hotel/room-service/orders" ><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+							Orders</a>
+						</li>
+						<li>
+							<a href="#" ><i class="fa fa-bar-chart" aria-hidden="true"></i>
+							Reports</a>
+						</li>
+					</ul>
+                    <!----nav tabs top ends here---->
+                    <!----tab content starts here---->
+					<div class="tab-content" id="main-hotelcontent">
+                        
+                        
+                        
+                        
+                        <!----tab orders starts here---->
+						<div class="tab-pane active" id="tab_Orders">
+							<div class="row">
+							    <div class="col-md-12">
+							        <!----orders inside tabs----->
+                                    <ul class="nav nav-tabs hotelordersnew-tab marginbot-20" role="tablist">
+                                        <li class="tab active">
+                                          <a id="" href="#orders-today" role="tab" data-toggle="tab" tabindex="0">Today's Orders</a>
+                                        </li>
+                                       
+                                        <li class="tab">
+                                         	
+                                          <a id="" href="#orders-past" role="tab" class="personal_goals" data-toggle="tab" tabindex="-1">Past Orders</a>
+                                        </li>
+                                      </ul>
+							        <!----orders inside tabs----->
+							    </div>
+							</div>
+                            
+                            <!----orders tab content starts here---->
+                            <div class="row">
+                                <div class="col-md-12">
+                                       <div class="tab-content" id="ordernew-hotelcst">
+                                            <!----tab orders-today starts here---->
+                                            <div class="tab-pane active" id="orders-today">
+                                                <!---filter section starts here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="search-row">
+                                                            <div class="col-md-2 col-md-offset-5 col-xs-6 col-xs-offset-1">
+                                                                <div class="radio custom-radio">
+                                                                    <label><input type="radio" name="orders">Show Open Jobs </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 col-xs-5">
+                                                                <div class="radio custom-radio">
+                                                                    <label><input type="radio" name="orders"> Show All</label>
+                                                                </div>
+                                                            </div>
+                                                            <form action="@controllers.hotel.routes.HotelAssociateController.getRoomServiceOrders()" method="get">
+                                                            <div class="col-md-3 col-xs-12 input-marg-xs">
+                                                                 <div id="custom-search-input">
+                                                                    <div class="input-group col-md-12">
+                                                                        <input type="text" class="  search-query form-control" placeholder="Search by Name" name="search"/>
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-danger" type="button">
+                                                                                <span class=" glyphicon glyphicon-search"></span>
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 col-xs-12 btn-center-xs">
+                                                                <button type="submit" class="btn btn-green btn-warning">Search</button>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---filter ends here---->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                          <table class="table table-striped">
+                                                            <thead>
+                                                              <tr>
+                                                                <th>S.No</th>
+                                                                <th>Order Number</th>
+                                                                <th>Placed On</th>
+                                                                <th>Customer Name</th>
+                                                              
+                                                                <th>Room No</th>
+                                                                <th>Order Type</th>
+                                                              
+                                                                <th>Status</th>
+                                                                <th>item(s) ordered</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              @for((order,index) <- orderList.zipWithIndex){
+                                                              <tr>
+                                                                <td>@{index+1}</td>
+                                                                <td>@order.getOrderNumber</td>
+                                                                <td>@order.getFromTime().format("dd-MM-yyyy HH : mm")</td>
+                                                                <td>@order.getCustomerName()</td>
+                                                                <td>@order.getRoomNumber(order.getCustomer().getId)</td>
+                                                                <td>@order.getTypeOfsearch()</td>
+                                                              
+                                                                <td>@order.getStatus()</td>
+                                                                <td>item(s) ordered</td>
+                                                                <td>eee</td>
+                                                              </tr>
+                                                   }       
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                          
+                                                <!---filter ends here---->
+                                                     
+                                           <!----tab orders-past starts here---->
+                                            <div class="tab-pane" id="orders-past">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="search-row">
+                                                            <div class="col-md-2 col-md-offset-4">
+                                                                <div class='input-group date' id='datetimepicker-start'>
+                                                                    <input type='text' name="fromDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class='input-group date' id='datetimepicker-end'>
+                                                                    <input type='text' name="toDate" class="form-control" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                 <div id="custom-search-input">
+                                                                    <div class="input-group col-md-12">
+                                                                        <input type="text" class="  search-query form-control" placeholder="Search by Name" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-danger" type="button">
+                                                                                <span class=" glyphicon glyphicon-search"></span>
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1 btn-center-xs">
+                                                                <button type="button" class="btn btn-green btn-warning">Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---filter ends here---->
+                                                    <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                          <table class="table table-striped">
+                                                            <thead>
+                                                              <tr>
+                                                                <th>S.No</th>
+                                                                <th>Order Number</th>
+                                                                <th>Placed On</th>
+                                                                <th>Customer Name</th>
+                                                              
+                                                                <th>Room No</th>
+                                                                <th>Order Type</th>
+                                                              
+                                                                <th>Status</th>
+                                                                <th>item(s) ordered</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              @for((order,index) <- orderList1.zipWithIndex){
+                                                              <tr>
+                                                                <td>@{index+1}</td>
+                                                                <td>@order.getOrderNumber</td>
+                                                                <td>@order.getFromTime().format("dd-MM-yyyy HH : mm")</td>
+                                                                <td>@order.getCustomerName()</td>
+                                                                <td>@order.getRoomNumber(order.getCustomer().getId)</td>
+                                                                <td>@order.getTypeOfsearch()</td>
+                                                              
+                                                                <td>@order.getStatus()</td>
+                                                                <td>item(s) ordered</td>
+                                                                <td>eee</td>
+                                                              </tr>
+                                                   }       
+                                                            </tbody>
+                                                          </table>
+                                                       
+                                                               
+                                                                    
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <!----orders tab content ends here---->
+                            
+						</div>
+                        <!----tab orders ends here---->
+                        
+                        <!----tab Staff starts here---->
+						
+					</div>
+                    <!----tab content starts here---->
+				</div>
+			</div>
+	        </div>
+	    </div>
+	</div>
+    
+	<script>
+	var orderId;
+	function assignAssociate(id){
+		orderId = id;                   
+		var assignId = 'assignAssociate'+id;
+		var associateName = $('#'+assignId+" option:selected").text();
+		$('#modal-staff-name').text(associateName);
+		if($('#assignAssociate'+id).val() != ''){
+		  $('.assign-staff-modal').modal('show');
+		}
+		else{
+			alert("Select Associate to Assign.");
+			return false;
+		}
+	}
+
+	function assignPersonnel(){
+		$.get('/hotel/assign-staff-to-order/'+orderId+'/'+$('#assignAssociate'+orderId).val(),function(data){
+				if(data == 1){
+					alert('assigned');
+					$('.assign-staff-modal').modal('hide');
+				}else{
+					alert('0');
+				}
+		});
+	}
+	
+	</script>
+<!-- --assign staff to order -->
+	 <div class="modal fade custom-modal assign-staff-modal " tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+              <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                  <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                      <h3 class="modal-title fontweight_500 modalcst-header" id="lineModalLabel">assign staff to order </h3>              
+                </div>
+                  <div class="modal-body">
+                  <div class="row">
+                  		<div class="col-md-8 col-md-offset-2">
+                  		<p>Do you want to assign <span id="modal-staff-name"></span> to this order?</p>
+                  			
+                  		</div>
+                  </div>
+                  </div>
+                  <div class="modal-footer cstmodal-footer">
+                  	<button type="button" class="btn btn-warning otp-yes-btn" onclick="assignPersonnel();" >Yes</button>
+                    <button type="button" class="btn btn-default otp-no-btn" data-dismiss="modal">No</button>
+                  </div>                
+                </div>
+            <!-- /.modal-content --> 
+   </div>
+            <!-- /.modal-dialog --> 
+</div>
+	
+	
+} 
